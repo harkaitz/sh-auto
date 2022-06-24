@@ -31,6 +31,7 @@
 auto() {
     if test -f ".info.sh"; then
         sh -e -c '
+        INSIDE_AUTO=y
         auto() {
             echo "No auto() function in `pwd`." >&2
             return 0
@@ -46,12 +47,16 @@ auto() {
 }
 ## -----------------------------------------------------------------------------
 SCRNAME="`basename "$0"`"
-if test @"${SCRNAME}" = @"auto";then
-    if test @"$1" = @"-h" || test @"$1" = @"--help";then
+if test @"${SCRNAME}" = @"auto"; then
+    if test @"$1" = @"-h" || test @"$1" = @"--help"; then
         sed -n 's/^ *#h: \{0,1\}//p' "$0" | sed "s|\\\$0|`basename $0`|g"
         echo ""
         sed -n 's/^ *#l: \{0,2\}//p' "$0"
     else
         auto "$@"
     fi
+elif test -n "${INFO_SH_LOADED}"; then
+    return 0
+elif test -f ./.info.sh; then
+    eval "`sed '/^\. /d' ./.info.sh`"
 fi
