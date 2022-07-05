@@ -29,6 +29,10 @@
 #h: Executes the 'auto()' function in file '.info.sh' if it exists.
 ##:
 auto() {
+    local pwd="`pwd`"
+    if test ! -f ".info.sh" && test -f "../.info.sh"; then
+        cd ".."
+    fi
     if test -f ".info.sh"; then
         sh -e -c '
         INSIDE_AUTO=y
@@ -44,6 +48,7 @@ auto() {
         echo "auto: No .info.sh file in the project." >&2
         return 0
     fi
+    cd "${pwd}"
 }
 ## -----------------------------------------------------------------------------
 SCRNAME="`basename "$0"`"
